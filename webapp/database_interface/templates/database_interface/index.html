@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{%block content%}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Companies</h1>
+                <p>There are {{num_companies}} companies in this database, comprising {{num_investors}} that Builders considers highly respected angels.</p>
+                <hr/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <h3>Search Options</h3>
+                <form method="get">
+
+                    <div class="form-group">
+                        {{form.year_founded}}
+                        <label for="{{form.year_founded.id_for_label}}">{{form.year_founded.label}}</label>
+                    </div>
+                    <div class="form-group">
+                        {{form.most_investors}}
+                        <label for="{{form.most_investors.id_for_label}}">{{form.most_investors.label}}</label>
+                    </div>
+                    <input type="submit">
+                </form>
+            </div>
+
+            {% if top_companies_list %}
+            <div class="col-md-9 fixed-table-body border-left">
+                <ul class="media-list">
+                    {% for company in top_companies_list %}
+                    <div class="border rounded">
+                        <li class="media" style="padding:10px">
+                            <div class="media-body">
+                                <h4 class="media-heading"><a href="{% url 'database_interface:detail_company' company.name%}">{{company.name}}</a></h4>
+                                <p>{{company.description}}</p>
+                                {% for tag in company.get_tags_as_list %}
+                                <span class="badge badge-light">{{tag}}</span>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    </div>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p>No companies are available.</p>
+    {% endif %}
+{%endblock content%}

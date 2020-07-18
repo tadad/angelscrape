@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{%block content%}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-2 fixed-top" style="padding-top:70px">
+                {%comment%}
+                <h1 class="navbar-brand">Sorting Options</h1>
+                <nav class="navbar">
+                  <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                      <a class="nav-link" href="">Option 1</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Option 2</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Option 3</a>
+                    </li>
+                  </ul>
+                </nav>
+                {%endcomment%}
+            </div>
+            <div class="col-md-10 offset-sm-2 fixed-table-body border-left border-right">
+                <h1>All Investors</h1>
+                <hr/>
+                <ul>
+                {% for investor in investors %}
+                <li><a href="{% url 'database_interface:detail_investor' investor.name%}">{{investor.name}}</a></li>
+                {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+    </div>
+{%endblock content%}
