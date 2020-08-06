@@ -1,1 +1,1 @@
-web: gunicorn angelscrape.webapp.wsgi
+web: gunicorn webapp.webapp.wsgi
