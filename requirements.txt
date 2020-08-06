@@ -22,7 +22,7 @@ idna==2.10
 incremental==17.5.0
 itemadapter==0.1.0
 libxml2dom==0.5
-lxml @ file:///C:/Users/Drew/Downloads/lxml-4.5.1-cp38-cp38-win32.whl
+lxml==4.5.1
 numpy==1.19.1
 pandas==1.0.5
 parsel==1.6.0
