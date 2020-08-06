@@ -1,3 +1,21 @@
+"""
+TODO: Funding info is sometimes just a round date. Mark irrelevant if they haven't gotten funding since 2016
+
+Info:
+    Relevant
+    Dead
+    Name
+    Description
+    Website
+    Location
+    Size
+    Total Raised
+    Original Pull
+
+    Tags
+"""
+
+
 from bs4 import BeautifulSoup
 from time import sleep
 from selenium import webdriver
@@ -10,17 +28,16 @@ from datetime import date
 URL = "https://angel.co/"
 
 ANGELS = {
-    "Julia-Dewahl":"u/julia-dewahl",
-    "Elad-Gil":"p/eladgil",
-    "Jude-Gomila":"p/gomila",
-    "Gaurav-Jain":"p/gaurav-jain-1",
-    "Max-Levchin":"p/mlevchin",
-    "Ben-Ling":"p/bling0",
-    "Alexis-Ohanian":"p/alexisohanian",
+    "Julia_Dewahl":"u/julia-dewahl",
+    "Elad_Gil":"p/eladgil",
+    "Jude_Gomila":"p/gomila",
+    "Gaurav_Jain":"p/gaurav-jain-1",
+    "Max_Levchin":"p/mlevchin",
+    "Ben_Ling":"p/bling0",
+    "Alexis_Ohanian":"p/alexisohanian",
 }
 
-def get_company_urls(angels):
-    captcha = True
+def get_company_urls(angels, captcha=True):
     driver = webdriver.Chrome(executable_path="C:\\Program Files\\chromedriver.exe")
 
     angel_urls = {}
@@ -43,16 +60,16 @@ def get_company_urls(angels):
         investments = soup.find_all("div", {"class":"investment"})
 
         for investment in investments:
-            angel_urls[angel].append(investment.find("a")["href"])
+            if investment.find("div", {"class":"copy"}):
+                angel_urls[angel].append(investment.find("a")["href"])
     driver.close()
     return angel_urls
 
 
-def get_company_data(angel_urls):
+def get_company_data(angel_urls, captcha=True):
     companies = {}
     tags = defaultdict(list)
     driver = webdriver.Chrome(executable_path="C:\\Program Files\\chromedriver.exe")
-    captcha = True
     for angel in angel_urls.keys():
         this_angels_companies = []
         for investment in tqdm(angel_urls[angel], desc="Getting company data from " + angel):
@@ -60,21 +77,19 @@ def get_company_data(angel_urls):
             driver.get(investment)
             if captcha:
                 captcha_status = input(
-                    "\nPress enter when you have finished solving the CAPTCHA. \n If there are no more CAPTCHAs, press 'n': ")
+                    "\nPress enter when you have finished solving the CAPTCHA.\nIf there are no more CAPTCHAs, press 'n': ")
                 if captcha_status == 'n':
                     captcha = False
             soup = BeautifulSoup(driver.page_source, 'lxml')
 
             # Checking if the company is too late stage for us
             if soup.find_all(text="Latest round"):
-                latest_round = soup.find("span", text="Latest round").parent.find("h4").text
-                series_re = re.compile(r"(Series\s([^aA]))|IPO(\s\((.*)\))?") # This only matches above series A!
-                if re.match(series_re, latest_round):
-                    continue
-
-            # Checking if the company is dead
-            if soup.find("span", {"class":"closedFlair_a3c49"}):
-                continue
+                funding = soup.find("span", text="Latest round").parent.find("h4").text
+                series_re = re.compile(r"Series.*|IPO.*|Acquired.*")
+                company["relevant"] = False if (series_re.match(funding) is not None) else True
+            else:
+                company['relevant'] = True
+            company["dead"] = True if soup.find("span", {"class":"closedFlair_a3c49"}) is not None else False
 
             # Getting the data
             try:
@@ -82,7 +97,7 @@ def get_company_data(angel_urls):
                 if not aside:
                     continue
 
-                name = soup.find("h1").text.replace(' ', '-')
+                name = soup.find("h1").text.strip()
                 company["name"] = name
                 description = soup.find("h2").text
                 company["description"] = description
@@ -114,6 +129,7 @@ def get_company_data(angel_urls):
 def main():
     companies, tags = get_company_data(get_company_urls(ANGELS))
 
+
     with open("..\\webapp\\outfiles\\tag_jsons\\tags.json", 'r') as existing_file:
         existing_tags = json.load(existing_file)
         existing_file.close()
@@ -131,7 +147,6 @@ def main():
                     existing_tags[tag] = tags[tag]
     with open("..\\webapp\\outfiles\\tag_jsons\\tags.json", 'w') as existing_file:
         json.dump(existing_tags, existing_file)
-
 
 
 if __name__=="__main__":

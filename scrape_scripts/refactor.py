@@ -1,5 +1,16 @@
-from selenium import webdriver
-from tqdm import tqdm
+"""
+TODO:
+
+INFO: This script can get the following data fields for each company from YC
+    Name
+    Description
+    Website
+    Relevant (assumed)
+    Dead (assumed)
+    Original Pull
+
+    Tags
+"""
 import requests
 from bs4 import BeautifulSoup
 from collections import defaultdict
@@ -16,12 +27,14 @@ def get_company_data():
     summary_items = soup.find_all("div", {"class":"summary-item"})
     for summary in summary_items:
         company = {}
-        name = summary.find("div", {"class":"summary-title"}).text.strip().replace(" ", "-")
+        name = summary.find("div", {"class":"summary-title"}).text.strip()
         website = summary.find("div", {"class": "summary-title"}).find("a")['href']
         description = summary.find("div", {"class":"summary-excerpt"}).text.strip()
         company["name"] = name
         company["website"] = website
         company["description"] = description
+        company["dead"] = False
+        company["relevant"] = True
         company["original_pull"] = date.today().isoformat()
 
         page_tags = summary.find("div", {"class":"summary-metadata-container"}).find_all("span", {"class":"summary-metadata-item"})

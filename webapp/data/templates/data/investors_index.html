@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{%block content%}
+    <div class="container">
+        <div class="row">
+            <div class="col pr-0">
+                <div class="border rounded mb-4 mt-3 p-3">
+                    <h1>All Investors</h1>
+                    <br/>
+                    <ul class="list-group">
+                    {% for investor in investors %}
+                        <a href="{% url 'data:investor_detail' investor.slug%}">
+                            <li class="list-group-item border rounded-0">
+                                {{investor}}
+                                <span class="badge badge-pill badge-primary">{{investor.get_companies.count}}</span>
+                            </li>
+                        </a>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{%endblock content%}

@@ -1,3 +1,15 @@
+"""
+TODO:
+
+Info:
+    Name
+    Website
+    Location
+    Original Pull
+
+    Tags
+"""
+
 from selenium import webdriver
 from tqdm import tqdm
 import requests
@@ -5,10 +17,7 @@ from bs4 import BeautifulSoup
 from collections import defaultdict
 import json
 from time import sleep
-
-"""
-NOTES: 
-"""
+from datetime import date
 
 URL = "https://500.co/startups"
 sectors = [
@@ -51,7 +60,7 @@ def get_company_data():
             for tr in table:
                 company = {}
                 data = tr.find_all("td")
-                name = data[0].text.strip().replace(" ", "-").replace("/", "-")
+                name = data[0].text.strip()
                 website = data[1].find('a')['href']
                 location = data[2].text.strip()
                 tags[data[3].text.strip()].append(name)
@@ -59,6 +68,7 @@ def get_company_data():
                 company['name'] = name
                 company['website'] = website
                 company['location'] = location
+                company['original_pull'] = date.today().isoformat()
                 companies.append(company)
     driver.close()
     return companies, tags

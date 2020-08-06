@@ -1,3 +1,17 @@
+"""
+TODO:
+
+Info:
+    Name
+    Decription
+    Location
+    Website
+    Relevant
+    Dead (assumed)
+
+    Tags
+"""
+
 import requests
 from bs4 import BeautifulSoup
 from collections import defaultdict
@@ -14,11 +28,13 @@ def get_company_data():
     for li in soup.find("section", {"id": "portfolio"}).find_all("li"):
         company = {}
         if li.find("span", {"class":"acquired"}):
-            continue
+            company["relevant"] = False
+        else:
+            company["relevant"] = True
         name = li.find("h3")
         if name.text.strip() == "Stealth":
             continue
-        name = name.find("a", {"target":"_blank"}).text.strip().replace(' ', "-")
+        name = name.find("a", {"target":"_blank"}).text.strip()
         info = [x.strip() for x in li.find("aside").text.split("\n") if x]
         location = info[0]
         tag = info[1]
@@ -28,6 +44,7 @@ def get_company_data():
         company["name"] = name
         company["description"] = description.strip()
         company["location"] = location.strip()
+        company["dead"] = False
         company["website"] = website
         company["original_pull"] = date.today().isoformat()
 

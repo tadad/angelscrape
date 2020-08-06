@@ -1,3 +1,17 @@
+"""
+TODO:
+
+INFO:
+    Name
+    Relevant (assumed)
+    Dead (assumed)
+    Website
+    Original Pull
+
+    Tags
+"""
+
+
 import requests
 from bs4 import BeautifulSoup
 from collections import defaultdict
@@ -5,7 +19,6 @@ import json
 from datetime import date
 
 URL = "https://boxgroup.com/#investments"
-
 
 def get_company_data():
     companies = []
@@ -17,12 +30,14 @@ def get_company_data():
     for investment in investments:
         company = {}
         link = investment.find('a')
-        name = link["id"].strip().replace(" ", "-")
+        name = link["id"].strip()
         website = link["href"]
         page_tags = investment["data-category"].split(',')
 
         company["name"] = name
         company["website"] = website
+        company['dead'] = False
+        company['relevant'] = True
         company["original_pull"] = date.today().isoformat()
 
         for tag in page_tags:

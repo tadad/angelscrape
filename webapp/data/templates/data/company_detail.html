@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{%block content%}
+    <div class="container">
+        <div class="row">
+            <div class="col pr-0">
+                <div class="border rounded mb-4 mt-3 p-3">
+                    <h1>{{object.name}}</h1>
+                    {% if company.description%}
+                    <p>{{company.description}}</p>
+                    {% endif %}
+                    {% if company.website%}
+                    <p><a href="{{company.website}}" target="_blank">{{company.website}}</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="border rounded p-3">
+                    <h2>Information</h2>
+                    <hr class="m-3"/>
+                    <p>Investors: {{company.get_investors_as_str}}</p>
+                    {% if company.year_founded %}
+                    <p>Year Founded: {{company.year_founded}}</p>
+                    {% endif %}
+                    {% if company.team_size %}
+                    <p>Team Size: {{company.team_size}}</p>
+                    {% endif %}
+                    {% if company.location %}
+                    <p>Location: {{company.location}}</p>
+                    {% endif %}
+                    {% if company.tag_set %}
+                    <p>Tags: {{company.get_tags_as_str}}</p>
+                    {% endif %}
+                    <small class="text-muted">Originally Pulled on {{company.original_pull}}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+{%endblock content%}

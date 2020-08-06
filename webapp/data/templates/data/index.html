@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{%block content%}
+    <div class="container">
+        <div class="row">
+            <div class="col pr-0">
+                <div class="border rounded mb-4 mt-3 p-3">
+                    <h1>Companies</h1>
+                    <p class="mb-1 text-muted">There are {{num_companies}} companies in this database, comprising {{num_investors}} investors that Builders considers highly respected angels.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <form method="get" action="{%url 'data:index' %}" class="mr-2 p-3 border rounded">
+                    <fieldset class="form-group">
+                        <div class="form-group custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" name="Ag&Food" id="Ag&Food">
+                            <label class="custom-control-label" for="Ag&Food">Ag & Food</label>
+                        </div>
+                        <div class="form-group custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" name="Cleantech" id="Cleantech">
+                            <label class="custom-control-label" for="Cleantech">Cleantech</label>
+                        </div>
+                        <div class="form-group custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" name="Consumer" id="Consumer">
+                            <label class="custom-control-label" for="Consumer">Consumer</label>
+                        </div>
+                        <div class="form-group custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" name="Real-Estate/Construction" id="Real-Estate/Construction">
+                            <label class="custom-control-label" for="Real-Estate/Construction">Real-Estate/Construction</label>
+                        </div>
+                        <div class="form-group custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" name="Health-IT" id="Health-IT">
+                            <label class="custom-control-label" for="Health-IT">Health-IT</label>
+                        </div>
+                        <div class="form-group custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" name="Industrials" id="Industrials">
+                            <label class="custom-control-label" for="Industrials">Industrials</label>
+                        </div>
+                        <div class="form-group custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" name="Fintech" id="Fintech">
+                            <label class="custom-control-label" for="Fintech">Fintech</label>
+                        </div>
+                        <div class="form-group custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" name="Enterprise" id="Enterprise">
+                            <label class="custom-control-label" for="Enterprise">Enterprise</label>
+                        </div>
+                        <div class="form-group custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" name="Other-Verticals" id="Other-Verticals">
+                            <label class="custom-control-label" for="Other-Verticals">Other-Verticals</label>
+                        </div>
+                    </fieldset>
+                    <div class="form-group d-flex justify-content-center">
+                        <button class="btn btn-primary" type="submit">Apply</button>
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="col-md-9 border rounded p-4">
+                <form action="{% url 'data:index' %}" method="get">
+                    <div class="form-group">
+                        <input id="search" name="search" type="text" class="form-control form-control-lg" placeholder="Search...">
+                    </div>
+                </form>
+                {% if top_companies_list %}
+
+                <small class="text-muted">  Showing {{on_page}} of {{count}} companies</small>
+                <br/>
+                <ul class="media-list p-0">
+                    {% for company in top_companies_list %}
+                    <div class="border border-muted">
+                        <li class="media m-1 p-3">
+                            <div class="media-body">
+                                <h4 class="media-heading"><a href="{% url 'data:company_detail' company.slug %}">{{company.name}}</a></h4>
+                                {% if company.description%}
+                                <p>{{company.description|truncatewords:"50"}}</p>
+                                {% endif %}
+                                <hr class="m-1"/>
+                                <div>
+                                    {% for vertical in company.verticals %} <span class="badge badge-dark">{{vertical.name}}</span>{% endfor %}
+                                </div>
+                                <div>
+                                    {% for tag in company.tag_set %}<span class="badge badge-light">{{tag.name}}</span>{% endfor %}
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                    {% endfor %}
+                </ul>
+
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        {% if first%}
+                        <a href="{{first}}" class="btn">First</a>
+                        {% endif %}
+                    </li>
+                    <li class="page-item">
+                        {% if previous%}
+                        <a href="{{previous}}" class="btn">Previous</a>
+                        {% endif %}
+                    </li>
+                    <li class="page-item">
+                        {% if next%}
+                        <a href="{{next}}" class="btn">Next</a>
+                        {% endif%}
+                    </li>
+                </ul>
+                {% else %}
+                <div class="text-center">
+                    <p>No companies are available.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{%endblock content%}

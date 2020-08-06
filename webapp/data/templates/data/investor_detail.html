@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{%block content%}
+    <div class="container">
+        <div class="row">
+            <div class="col pr-0">
+                <div class="border rounded mb-4 mt-3 p-3">
+                    <h1>{{investor}}</h1>
+                    <br/>
+                    <ul class="list-group">
+                    {% for company in investor.get_companies %}
+                        <a href="{% url 'data:company_detail' company.slug%}">
+                            <li class="list-group-item border rounded-0">
+                                {{company.name}}
+
+                            </li>
+                        </a>
+                    {% endfor%}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{%endblock content%}
+
+
